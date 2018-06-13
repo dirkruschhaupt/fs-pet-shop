@@ -17,28 +17,36 @@ app.get('/pets', function(req, res) {
       return res.sendStatus(500);
     }
     let pets = JSON.parse(petsJSON);
-    res.send(pets);
+    res.set('Content-Type', 'application/json');
+    res.status(200).send(pets);
   });
 });
 
-app.get('/pets/:id', function(req, res) {
+app.get('/pets/:id/update', function(req, res) {
   fs.readFile(petsPath, 'utf8', function(err, petsJSON) {
     if (err) {
       console.error(err.stack);
       return res.sendStatus(500);
     }
+    console.log("Req param of id:", req.params.id);
     let id = Number.parseInt(req.params.id);
     let pets = JSON.parse(petsJSON);
 
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
       return res.sendStatus(404);
     }
-    res.set('Content-Type', 'text/plain');
+    res.set('Content-Type', 'application/json');
     res.send(pets[id]);
   });
 });
 
+//adding pet information
+app.post('/pets', function(req, res) {
+  res.send("add to pets.json");
+});
+
 app.use(function(req, res) {
+  console.log("We reached the catch all.");
   res.sendStatus(404);
 });
 
